@@ -9,7 +9,7 @@ SyslogIdentifier=interceptord
 PIDFile=/var/run/interceptord.pid
 User=jasmin
 Group=jasmin
-ExecStart=/usr/bin/interceptord.py
+ExecStart=/usr/local/bin/interceptord.py
 
 [Install]
 WantedBy=multi-user.target

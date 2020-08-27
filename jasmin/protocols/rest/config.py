@@ -8,7 +8,8 @@ show_jasmin_version = True
 auth_cache_seconds = 10
 auth_cache_max_keys = 500
 
-log_level = logging.getLevelName('INFO')
+# log_level = logging.getLevelName('INFO')
+log_level = logging.getLevelName('DEBUG')
 log_file = '/var/log/jasmin/restapi.log'
 log_rotate = 'W6'
 log_format = '%(asctime)s %(levelname)-8s %(process)d %(message)s'

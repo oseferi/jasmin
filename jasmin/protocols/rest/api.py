@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import syslog
 import uuid
 import re
 import requests
@@ -197,16 +198,19 @@ class SendBatchResource(JasminRestApi, JasminHttpApiProxy):
 
         batch_id = uuid.uuid4()
         params = self.decode_request_data(request)
+        syslog.syslog(syslog.LOG_INFO, "Printing Request" + str(params))
+        syslog.syslog(syslog.LOG_INFO, "Request type" + str(type(params)))
+
         config = {'throughput': http_throughput_per_worker, 'smart_qos': smart_qos}
 
         # Batch scheduling
-        countdown = self.parse_schedule_at(params.get('batch_config', {}).get('schedule_at', None))
+        countdown = self.parse_schedule_at(params[0].get('batch_config', {}).get('schedule_at', None))
 
         message_count = 0
-        for _message_params in params.get('messages', {}):
+        for _message_params in params[0].get('messages', {}):
             # Construct message params
             message_params = {'username': request.context['username'], 'password': request.context['password']}
-            message_params.update(params.get('globals', {}))
+            message_params.update(params[0].get('globals', {}))
             message_params.update(_message_params)
 
             # Convert _ to -
@@ -225,18 +229,18 @@ class SendBatchResource(JasminRestApi, JasminHttpApiProxy):
                 for _to in to_list:
                     message_params['to'] = _to
                     if countdown == 0:
-                        httpapi_send.delay(batch_id, params.get('batch_config', {}), message_params, config)
+                        httpapi_send.delay(batch_id, params[0].get('batch_config', {}), message_params, config)
                     else:
                         httpapi_send.apply_async(
-                            args=[batch_id, params.get('batch_config', {}), message_params, config],
+                            args=[batch_id, params[0].get('batch_config', {}), message_params, config],
                             countdown=countdown)
                     message_count += 1
             else:
                 if countdown == 0:
-                    httpapi_send.delay(batch_id, params.get('batch_config', {}), message_params, config)
+                    httpapi_send.delay(batch_id, params[0].get('batch_config', {}), message_params, config)
                 else:
                     httpapi_send.apply_async(
-                        args=[batch_id, params.get('batch_config', {}), message_params, config], countdown=countdown)
+                        args=[batch_id, params[0].get('batch_config', {}), message_params, config], countdown=countdown)
                 message_count += 1
 
         response.body = {

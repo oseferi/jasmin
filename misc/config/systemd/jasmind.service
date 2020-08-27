@@ -8,7 +8,7 @@ SyslogIdentifier=jasmind
 PIDFile=/var/run/jasmind.pid
 User=jasmin
 Group=jasmin
-ExecStart=/usr/bin/jasmind.py --username jcliadmin --password jclipwd
+ExecStart=/usr/local/bin/jasmind.py --username jcliadmin --password jclipwd
 
 [Install]
 WantedBy=multi-user.target

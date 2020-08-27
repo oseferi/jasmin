@@ -8,7 +8,7 @@ SyslogIdentifier=jasmin-dlrd
 PIDFile=/var/run/jasmin-dlrd.pid
 User=jasmin
 Group=jasmin
-ExecStart=/usr/bin/dlrd.py
+ExecStart=/usr/local/bin/dlrd.py
 
 [Install]
 WantedBy=multi-user.target
